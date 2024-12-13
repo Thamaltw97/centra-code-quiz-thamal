@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { 
+    background: #ebeff3;
+}
+.container {
+    max-width: 100%;
+    margin: 0 auto;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #ebeff3;
+  }
+  
+  button {
+    cursor: pointer;
+  }
