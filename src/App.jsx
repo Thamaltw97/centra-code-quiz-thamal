@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import InputField from "./components/InputField";
 import Dropdown from "./components/Dropdown";
 import FileUpload from "./components/FileUpload";
 import { generatePDF } from "./utils/generatePDF";
-import { sendEmail } from "./utils/sendEmail";
+import axios from "axios";
 
 const App = () => {
   const {
@@ -12,23 +12,56 @@ const App = () => {
     handleSubmit,
     setValue,
     getValues,
+    reset,
     formState,
     formState: { errors },
   } = useForm();
 
+  const [files, setFiles] = useState([]);
+
   const onSubmit = async (data) => {
     try {
-      const pdfBlob = await generatePDF(data);
-      await sendEmail(pdfBlob, data);
-      alert("Form submitted successfully!");
+      const pdfBlob = await generatePDF(data); // Generate the PDF Blob
+      
+      const formData = new FormData();
+      formData.append("pdfBlob", pdfBlob, "Attachment.pdf");
+  
+      const files = data.attachments;
+      files.forEach(file => formData.append("attachments", file));
+  
+      formData.append("formData", JSON.stringify(data));
+  
+      // API Call
+      const response = await axios.post("http://localhost:5000/api/send-email", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      alert(response.data.message);
+      
     } catch (error) {
       console.error("Error:", error);
       alert("Failed to submit form. Please try again.");
     }
   };
-
+  
+  const handleCancel = () => {
+    reset();
+    setValue("phoneNumber", "");
+    setValue("postalCode", "");
+    setValue("sellPrice", "");
+    setValue("listPrice", "");
+    setValue("depositValue", "");
+    setValue("discount", "");
+    setValue("commission", "");
+    setValue("sellPrice", "");
+    setValue("attachments", []);
+    setFiles([]);
+    // resetFileInput();
+  };
+  
   return (
-    <div className="container mx-auto p-3 rounded-lg">
+    <div className="container mx-auto p-3 rounded-lg" id="form-container">
       <div className="bg-white rounded-lg">
         <h1 
           className="text-2xl font-bold mb-4 text-white p-4 rounded-t-lg" 
@@ -445,10 +478,13 @@ const App = () => {
               </div>
               <div className="p-2">
                 <FileUpload 
+                  name="attachments"
                   register={register}
                   setValue={setValue} 
                   getValues={getValues}
                   formState={formState}
+                  files={files}
+                  setFiles={setFiles}
                 />
               </div>
             </section>
@@ -466,6 +502,7 @@ const App = () => {
               type="button"
               className="text-black px-4 py-2 hover:bg-gray-600"
               style={{ backgroundColor: '#ebeff3' }}
+              onClick={handleCancel}
             >
               Cancel
             </button>
