@@ -11,3 +11,6 @@
 - ps: Please add you email server credentials inside server/index.js
 
   :)
+
+
+![image](https://github.com/user-attachments/assets/50261966-5d5b-4f33-bbb2-d2543a82ef20)
