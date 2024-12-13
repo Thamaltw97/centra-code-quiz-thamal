@@ -8,4 +8,6 @@
 - run -> "npm i"
 - run -> "npm run dev" or "npm start"
 
-- ps: Please add you email server credentials inside server/index.js :)
+- ps: Please add you email server credentials inside server/index.js
+
+  :)
