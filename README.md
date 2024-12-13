@@ -7,3 +7,5 @@
 - Navigate inside "server" folder (cd server)
 - run -> "npm i"
 - run -> "npm run dev" or "npm start"
+
+- ps: Please add you email server credentials inside server/index.js :)
