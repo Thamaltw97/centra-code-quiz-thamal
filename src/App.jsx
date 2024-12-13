@@ -18,8 +18,10 @@ const App = () => {
   } = useForm();
 
   const [files, setFiles] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit = async (data) => {
+    setIsLoading(true);
     try {
       const pdfBlob = await generatePDF(data); // Generate the PDF Blob
       
@@ -37,11 +39,14 @@ const App = () => {
           "Content-Type": "multipart/form-data",
         },
       });
+      handleCancel();
       alert(response.data.message);
       
     } catch (error) {
       console.error("Error:", error);
       alert("Failed to submit form. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
   
@@ -69,6 +74,12 @@ const App = () => {
         >
           New Order Intake - Supply & Install
         </h1>
+        {isLoading && (
+          <div className="flex justify-center items-center mb-4">
+            <div className="loader border-t-4 border-blue-500 rounded-full w-8 h-8 animate-spin"></div>
+            <span className="ml-2 text-blue-500">Submitting...</span>
+          </div>
+        )}
         <form onSubmit={handleSubmit(onSubmit)} className="p-3">
           <div className="flex flex-row gap-2">
 
@@ -495,6 +506,7 @@ const App = () => {
               type="submit"
               className="text-white px-4 py-2"
               style={{ backgroundColor: '#3e5fae' }}
+              disabled={isLoading}
             >
               Submit
             </button>
